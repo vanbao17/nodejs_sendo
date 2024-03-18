@@ -2,6 +2,7 @@ const express = require("express");
 const configViewEngine = require("./configs/viewEngine");
 const initAPIRoute = require("./routes/api");
 const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3001;
 const cors = require("cors");
@@ -13,6 +14,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 dotenv.config();
 configViewEngine(app);
+app.use(bodyParser.json());
 initAPIRoute(app);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

@@ -11,6 +11,11 @@ const {
   getInforShop,
   getProductsOfShop,
   getFavoriteProd,
+  addToCart,
+  cart,
+  checkProdInCart,
+  handleDeleteCart,
+  updateCart,
 } = require("../controllers/APIController");
 const router = express.Router();
 const initAPIRoute = (app) => {
@@ -25,6 +30,11 @@ const initAPIRoute = (app) => {
   router.get("/inforShop/:id", getInforShop);
   router.get("/prodShop/:id", getProductsOfShop);
   router.get("/favoriteProdShop/:id", getFavoriteProd);
+  router.post("/addtocart", addToCart);
+  router.get("/gio-hang/:id", cart);
+  router.delete("/delete-cart", handleDeleteCart);
+  router.get("/check-prods-select/:id", checkProdInCart);
+  router.post("/update-cart", updateCart);
   return app.use("/api/v1/", router);
 };
 module.exports = initAPIRoute;

@@ -212,6 +212,62 @@ let updateCart = (req, res) => {
     }
   );
 };
+let getFiltersFindProd = (req, res) => {
+  let data = req.params.id;
+  pool.query(
+    "SELECT quanlityCart FROM sendo.cart as c where c.idProduct = ?",
+    [data],
+    (err, result) => {
+      if (err) {
+        console.error("Error querying cart:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getCateFindPage = (req, res) => {
+  let data = req.params.id;
+  pool.query(
+    "SELECT * FROM sendo.Category_Attributes as m,sendo.Attributes as a,sendo.Type_Attributes as t  where a.attribute_id = m.attribute_id and  m.madm1 = ? and a.type_attribute_id = t.type_attribute_id;",
+    [data],
+    (err, result) => {
+      if (err) {
+        console.error("Error querying cart:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getDm1Single = (req, res) => {
+  let data = req.params.id;
+  pool.query(
+    "SELECT * FROM sendo.danhmuc1 as m where m.madm1= ?",
+    [data],
+    (err, result) => {
+      if (err) {
+        console.error("Error querying cart:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getAttributeValues = (req, res) => {
+  let data = req.params.id;
+  pool.query(
+    "select * from sendo.Attribute_Values as a where a.attribute_id =?",
+    [data],
+    (err, result) => {
+      if (err) {
+        console.error("Error querying cart:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
 
 module.exports = {
   getAllProducts,
@@ -230,4 +286,8 @@ module.exports = {
   handleDeleteCart,
   checkProdInCart,
   updateCart,
+  getFiltersFindProd,
+  getCateFindPage,
+  getDm1Single,
+  getAttributeValues,
 };

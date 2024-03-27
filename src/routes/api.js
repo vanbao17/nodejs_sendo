@@ -16,6 +16,8 @@ const {
   checkProdInCart,
   handleDeleteCart,
   updateCart,
+  getCateFindPage,
+  getAttributeValues,
 } = require("../controllers/APIController");
 const router = express.Router();
 const initAPIRoute = (app) => {
@@ -35,6 +37,9 @@ const initAPIRoute = (app) => {
   router.delete("/delete-cart", handleDeleteCart);
   router.get("/check-prods-select/:id", checkProdInCart);
   router.post("/update-cart", updateCart);
+  router.get("/tim-kiem/:id", getCateFindPage);
+  router.get("/danhmuc1single/:id", getCateFindPage);
+  router.get("/getAttributeValues/:id", getAttributeValues);
   return app.use("/api/v1/", router);
 };
 module.exports = initAPIRoute;

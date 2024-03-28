@@ -18,6 +18,7 @@ const {
   updateCart,
   getCateFindPage,
   getAttributeValues,
+  getFindProduct,
 } = require("../controllers/APIController");
 const router = express.Router();
 const initAPIRoute = (app) => {
@@ -40,6 +41,7 @@ const initAPIRoute = (app) => {
   router.get("/tim-kiem/:id", getCateFindPage);
   router.get("/danhmuc1single/:id", getCateFindPage);
   router.get("/getAttributeValues/:id", getAttributeValues);
+  router.get("/getProductsLetters", getFindProduct);
   return app.use("/api/v1/", router);
 };
 module.exports = initAPIRoute;

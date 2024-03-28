@@ -268,7 +268,21 @@ let getAttributeValues = (req, res) => {
     }
   );
 };
-
+let getFindProduct = (req, res) => {
+  let data = req.query.query.toLowerCase();
+  pool.query(
+    "SELECT * FROM sendo.products as p where p.nameProduct LIKE '" +
+      data +
+      "%';",
+    (err, result) => {
+      if (err) {
+        console.error("Error querying cart:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
 module.exports = {
   getAllProducts,
   getDanhMuc2Detail,
@@ -290,4 +304,5 @@ module.exports = {
   getCateFindPage,
   getDm1Single,
   getAttributeValues,
+  getFindProduct,
 };

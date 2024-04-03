@@ -47,6 +47,17 @@ let getDanhMuc3All = (req, res) => {
     }
   );
 };
+let getDanhMuc3WithDm2 = (req, res) => {
+  let madm2 = req.params.madm2;
+  pool.query(
+    "select * from danhmuc3 WHERE madm2 = ?",
+    [madm2],
+    (err, result) => {
+      if (err) throw err;
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
 let getCateFive = (req, res) => {
   pool.query(
     "SELECT * FROM sendo.danhmuc2 ORDER BY RAND() LIMIT 5;",
@@ -305,4 +316,5 @@ module.exports = {
   getDm1Single,
   getAttributeValues,
   getFindProduct,
+  getDanhMuc3WithDm2,
 };

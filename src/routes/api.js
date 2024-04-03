@@ -19,6 +19,7 @@ const {
   getCateFindPage,
   getAttributeValues,
   getFindProduct,
+  getDanhMuc3WithDm2,
 } = require("../controllers/APIController");
 const router = express.Router();
 const initAPIRoute = (app) => {
@@ -26,6 +27,7 @@ const initAPIRoute = (app) => {
   router.get("/danhmuc1", getDanhMuc1);
   router.get("/danhmuc2", getDanhMuc2All);
   router.get("/danhmuc2/:madm1", getDanhMuc2Detail);
+  router.get("/danhmuc3withdm2/:madm2", getDanhMuc3WithDm2);
   router.get("/productswithcate/:cateid", getProductsCate);
   router.get("/danhmuc2rand5", getCateFive);
   router.get("/danhmuc3/:cateid", getDanhMuc3All);

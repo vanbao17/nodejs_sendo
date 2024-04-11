@@ -20,6 +20,10 @@ const {
   getAttributeValues,
   getFindProduct,
   getDanhMuc3WithDm2,
+  getAllAttributeValues,
+  createShop,
+  createTypeShop,
+  getShop,
 } = require("../controllers/APIController");
 const router = express.Router();
 const initAPIRoute = (app) => {
@@ -44,6 +48,10 @@ const initAPIRoute = (app) => {
   router.get("/danhmuc1single/:id", getCateFindPage);
   router.get("/getAttributeValues/:id", getAttributeValues);
   router.get("/getProductsLetters", getFindProduct);
+  router.get("/getAllAttributeValues", getAllAttributeValues);
+  router.post("/create-shop", createShop);
+  router.post("/get-shop", getShop);
+  router.post("/create-type-shop", createTypeShop);
   return app.use("/api/v1/", router);
 };
 module.exports = initAPIRoute;

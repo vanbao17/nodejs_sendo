@@ -431,11 +431,15 @@ CREATE TABLE IF NOT EXISTS customers (
 	imageUser varchar(50),
     nameUser nvarchar(50),
     phoneNumber varchar(11),
+    password nvarchar(100),
+    googleId varchar(100), 
     emailUser varchar(50),
+    created_at date,
+	last_login date,
     dateOB date
 );
-INSERT INTO sendo.customers (idCustomers, nameCustomers, imageUser, nameUser, phoneNumber, emailUser, dateOB)
-VALUES (1, 'pvb', '1.jpg', 'pvb', '0904973022', 'baopam21@gmail.com', STR_TO_DATE('17-11-2003', '%d-%m-%Y'));
+INSERT INTO sendo.customers (idCustomers, nameCustomers, imageUser, nameUser, phoneNumber,password, emailUser, dateOB)
+VALUES (1, 'pvb', '1.jpg', 'pvb', '0904973022','abc123', 'baopam21@gmail.com', STR_TO_DATE('17-11-2003', '%d-%m-%Y'));
 
 -- Tạo bảng products
 CREATE TABLE IF NOT EXISTS products (
@@ -467,12 +471,13 @@ values ('Đèn LED dây 2835 12V cuộn 5m - siêu sáng, Ánh sáng trắng (60
 ('Opppo A31 Ram 6g bộ nhớ 128 gb mới 100% - OPPO 5V - 2A','https://media3.scdn.vn/img4/2022/09_28/jZb9ul7ZnqJGy0ODQ6fz_simg_de2fe0_250x250_maxb.jpg',null,100,100,'Đang bán',500000,290000,'2003-11-17',1,6,9,1),
 ('Iphone XSMAX 64gb Quốc tế mới 99 % - iPhone màu vàng 123','https://media3.scdn.vn/img4/2022/09_23/EzjLbTj4tu2FBr9R1hoR_simg_de2fe0_250x250_maxb.jpg',null,100,100,'Đang bán',500000,290000,'2003-11-17',1,6,9,1);
 -- Tạo bảng rate
-create table if not exists products (
+create table if not exists products_attribute (
 	id_Attribute_Products INT PRIMARY KEY AUTO_INCREMENT,
     idProduct int,
-	nameAttr VARCHAR(50),
+	attribute_id int,
 	value VARCHAR(255),
-    FOREIGN KEY (idProduct) REFERENCES detailProduct(idProduct)
+    FOREIGN KEY (idProduct) REFERENCES products(idProduct),
+    FOREIGN KEY (attribute_id) REFERENCES attributes(attribute_id)
 );
 CREATE TABLE Images (
     image_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -514,7 +519,7 @@ CREATE TABLE IF NOT EXISTS detailProduct (
     trademark VARCHAR(10),
     dateBegin date,
     dateEnd date,
-    properties text,
+    properties TEXT,
     unit NVARCHAR(20),
     descriptionDetail TEXT,
     origin NVARCHAR(30),
@@ -561,10 +566,60 @@ CREATE TABLE sizes (
     size_id INT PRIMARY KEY AUTO_INCREMENT,
     size_name VARCHAR(50) NOT NULL
 );
+INSERT INTO sizes (size_id, size_name) VALUES (1, 'XS');
+INSERT INTO sizes (size_id, size_name) VALUES (2, 'S');
+INSERT INTO sizes (size_id, size_name) VALUES (3, 'M');
+INSERT INTO sizes (size_id, size_name) VALUES (4, 'L');
+INSERT INTO sizes (size_id, size_name) VALUES (5, 'XL');
+INSERT INTO sizes (size_id, size_name) VALUES (6, 'XXL');
+INSERT INTO sizes (size_id, size_name) VALUES (7, '35');
+INSERT INTO sizes (size_id, size_name) VALUES (8, '36');
+INSERT INTO sizes (size_id, size_name) VALUES (9, '37');
+INSERT INTO sizes (size_id, size_name) VALUES (10, '38');
+INSERT INTO sizes (size_id, size_name) VALUES (11, '39');
+INSERT INTO sizes (size_id, size_name) VALUES (12, '40');
+INSERT INTO sizes (size_id, size_name) VALUES (13, '41');
+INSERT INTO sizes (size_id, size_name) VALUES (14, '42');
+INSERT INTO sizes (size_id, size_name) VALUES (15, '43');
+INSERT INTO sizes (size_id, size_name) VALUES (16, '44');
 create table colors (
 	color_id INT PRIMARY KEY AUTO_INCREMENT,
     color_name VARCHAR(50) NOT NULL	
 );
+INSERT INTO colors (color_name) VALUES ('Red');
+INSERT INTO colors (color_name) VALUES ('Green');
+INSERT INTO colors (color_name) VALUES ('Blue');
+INSERT INTO colors (color_name) VALUES ('Black');
+INSERT INTO colors (color_name) VALUES ('White');
+INSERT INTO colors (color_name) VALUES ('Yellow');
+INSERT INTO colors (color_name) VALUES ('Cyan');
+INSERT INTO colors (color_name) VALUES ('Magenta');
+INSERT INTO colors (color_name) VALUES ('Maroon');
+INSERT INTO colors (color_name) VALUES ('Olive');
+INSERT INTO colors (color_name) VALUES ('Lime');
+INSERT INTO colors (color_name) VALUES ('Navy');
+INSERT INTO colors (color_name) VALUES ('Purple');
+INSERT INTO colors (color_name) VALUES ('Teal');
+INSERT INTO colors (color_name) VALUES ('Silver');
+INSERT INTO colors (color_name) VALUES ('Gray');
+INSERT INTO colors (color_name) VALUES ('Orange');
+INSERT INTO colors (color_name) VALUES ('Brown');
+INSERT INTO colors (color_name) VALUES ('Pink');
+INSERT INTO colors (color_name) VALUES ('Gold');
+INSERT INTO colors (color_name) VALUES ('Beige');
+INSERT INTO colors (color_name) VALUES ('Coral');
+INSERT INTO colors (color_name) VALUES ('Turquoise');
+INSERT INTO colors (color_name) VALUES ('Violet');
+INSERT INTO colors (color_name) VALUES ('Indigo');
+INSERT INTO colors (color_name) VALUES ('Mint');
+INSERT INTO colors (color_name) VALUES ('Lavender');
+INSERT INTO colors (color_name) VALUES ('Salmon');
+INSERT INTO colors (color_name) VALUES ('Crimson');
+INSERT INTO colors (color_name) VALUES ('Khaki');
+INSERT INTO colors (color_name) VALUES ('Peach');
+INSERT INTO colors (color_name) VALUES ('Azure');
+INSERT INTO colors (color_name) VALUES ('Ivory');
+INSERT INTO colors (color_name) VALUES ('Chartreuse');
 
 CREATE TABLE product_sizes (
     idProduct INT,
@@ -677,7 +732,43 @@ CREATE TABLE IF NOT EXISTS tienich (
     tentienich NVARCHAR(10),
     images NVARCHAR(10)
 );
+CREATE TABLE IF NOT EXISTS size_cate (
+    id_size_cate INT PRIMARY KEY AUTO_INCREMENT,
+    madm1 int,
+    size_id int,
+    FOREIGN KEY (madm1) REFERENCES danhmuc1(madm1),
+    FOREIGN KEY (size_id) REFERENCES sizes(size_id)
+);
+-- Thời trang nữ (dm1 = 1) liên kết với size quần áo từ XS đến XXL
+INSERT INTO size_cate (madm1, size_id) VALUES (1, 1);  -- XS
+INSERT INTO size_cate (madm1, size_id) VALUES (1, 2);  -- S
+INSERT INTO size_cate (madm1, size_id) VALUES (1, 3);  -- M
+INSERT INTO size_cate (madm1, size_id) VALUES (1, 4);  -- L
+INSERT INTO size_cate (madm1, size_id) VALUES (1, 5);  -- XL
+INSERT INTO size_cate (madm1, size_id) VALUES (1, 6);  -- XXL
+-- Thời trang nam (madm1 = 2) liên kết với size quần áo từ XS đến XXL
+INSERT INTO size_cate (madm1, size_id) VALUES (2, 1);  -- XS
+INSERT INTO size_cate (madm1, size_id) VALUES (2, 2);  -- S
+INSERT INTO size_cate (madm1, size_id) VALUES (2, 3);  -- M
+INSERT INTO size_cate (madm1, size_id) VALUES (2, 4);  -- L
+INSERT INTO size_cate (madm1, size_id) VALUES (2, 5);  -- XL
+INSERT INTO size_cate (madm1, size_id) VALUES (2, 6);  -- XXL
+-- Giày dép - Túi xách (madm1 = 4) liên kết với size giày từ 35 đến 44
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 7);  -- 35
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 8);  -- 36
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 9);  -- 37
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 10); -- 38
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 11); -- 39
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 12); -- 40
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 13); -- 41
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 14); -- 42
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 15); -- 43
+INSERT INTO size_cate (madm1, size_id) VALUES (4, 16); -- 44
 
-
-
-
+CREATE TABLE IF NOT EXISTS valuesAttr_product (
+    id_valuesAttr_product INT PRIMARY KEY AUTO_INCREMENT,
+    idProduct int,
+    attribute_value_id int,
+    FOREIGN KEY (idProduct) REFERENCES products(idProduct),
+    FOREIGN KEY (attribute_value_id) REFERENCES Attribute_Values(attribute_value_id)
+);

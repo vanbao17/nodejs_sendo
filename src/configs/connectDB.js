@@ -3,7 +3,7 @@ const pool = mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "Phamvanbao_0123",
-  database: "sendo",
+  database: "psomwqdghosting_sendo",
   insecureAuth: true,
 });
 pool.connect(function (err) {

@@ -4,7 +4,7 @@ let addValueAttrProduct = (req, res) => {
   dataDetail.forEach((element) => {
     if (!Array.isArray(element)) {
       pool.query(
-        "insert into sendo.valuesattr_product(idProduct,attribute_value_id) values(?,?)",
+        "insert into psomwqdghosting_sendo.valuesAttr_product(idProduct,attribute_value_id) values(?,?)",
         [idProduct, element],
         (err, result) => {
           if (err) {
@@ -15,7 +15,7 @@ let addValueAttrProduct = (req, res) => {
     } else {
       element.forEach((e) => {
         pool.query(
-          "insert into sendo.valuesattr_product(idProduct,attribute_value_id) values(?,?)",
+          "insert into psomwqdghosting_sendo.valuesAttr_product(idProduct,attribute_value_id) values(?,?)",
           [idProduct, e.attribute_value_id],
           (err, result) => {
             if (err) {
@@ -37,7 +37,7 @@ let deleteValueAttr = (req, res) => {
     idProduct.map((item) => {
       return new Promise((resolve, reject) => {
         pool.query(
-          "DELETE FROM sendo.valuesattr_product WHERE idProduct = ?",
+          "DELETE FROM psomwqdghosting_sendo.valuesAttr_product WHERE idProduct = ?",
           [item],
           (err, result) => {
             if (err) {
@@ -74,7 +74,7 @@ let deleteValueAttr = (req, res) => {
 let getColorSize = (req, res) => {
   const id = req.params.id;
   pool.query(
-    "select * from sendo.attribute_values where attribute_value_id=?",
+    "select * from psomwqdghosting_sendo.Attribute_Values where attribute_value_id=?",
     [id],
     (err, result) => {
       if (err) {
@@ -85,8 +85,48 @@ let getColorSize = (req, res) => {
     }
   );
 };
+let getFullAttribute = (req, res) => {
+  pool.query(
+    "select * from psomwqdghosting_sendo.Attribute_Values",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("loi cmnr");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getAllAttribute = (req, res) => {
+  pool.query(
+    "select * from psomwqdghosting_sendo.Attributes",
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("loi cmnr");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getAttrVaulueProduct = (req, res) => {
+  const { idProduct } = req.body;
+  pool.query(
+    "select * from psomwqdghosting_sendo.valuesAttr_product where idProduct = ?",
+    [idProduct],
+    (err, result) => {
+      if (err) {
+        return res.status(500).send("loi cmnr");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
 module.exports = {
   addValueAttrProduct,
   deleteValueAttr,
   getColorSize,
+  getAttrVaulueProduct,
+  getFullAttribute,
+  getAllAttribute,
 };

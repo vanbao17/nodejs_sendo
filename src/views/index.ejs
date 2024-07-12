@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1><%= message %></h1>
+    <form action="/addDanhMuc1" method="POST">
+      <h3>Thêm danh mục 1</h3>
+      <label for="danhmuc1">Xem danh mục 1:</label>
+      <select id="danhmuc1" name="danhmuc1">
+        <% dm1.forEach(item => { %>
+        <option value="<%= item.madm1 %>"><%= item.tendm1 %></option>
+        <% }) %>
+      </select>
+      <label for="namedm1">Tên danh mục 1 cần thêm:</label>
+      <input type="text" id="namedm1" name="namedm1" />
+      <button type="submit">Thêm danh mục</button>
+    </form>
+
+    <form action="/addDanhMuc2" method="POST">
+      <h3>Thêm danh mục 2</h3>
+      <label for="categorySelect">Xem danh mục 1:</label>
+      <select id="categorySelect" name="categorySelect">
+        <% dm1.forEach(item => { %>
+        <option value="<%= item.madm1 %>"><%= item.tendm1 %></option>
+        <% }) %>
+      </select>
+      <label for="categorySelect">Xem danh mục 2:</label>
+      <select id="categorySelect" name="categorySelect">
+        <% dm2.forEach(item => { %>
+        <option value="<%= item.madm2 %>"><%= item.tendm2 %></option>
+        <% }) %>
+      </select>
+      <label for="namedm2">Tên danh mục:</label>
+      <input type="text" id="namedm2" name="namedm2" />
+      <button type="submit">Thêm danh mục</button>
+    </form>
+    <form action="/addDanhMuc3" method="POST">
+      <h3>Thêm danh mục 3</h3>
+      <label for="categorySelect">Xem danh mục 1:</label>
+      <select id="categorySelect" name="categorySelect">
+        <% dm1.forEach(item => { %>
+        <option value="<%= item.madm1 %>"><%= item.tendm1 %></option>
+        <% }) %>
+      </select>
+      <label for="categorySelect">Xem danh mục 2:</label>
+      <select id="categorySelect" name="categorySelect">
+        <% dm2.forEach(item => { %>
+        <option value="<%= item.madm2 %>"><%= item.tendm2 %></option>
+        <% }) %>
+      </select>
+      <label for="categorySelect">Xem danh mục 3:</label>
+      <select id="categorySelect" name="categorySelect">
+        <% dm3.forEach(item => { %>
+        <option value="<%= item.madm3 %>"><%= item.tendm3 %></option>
+        <% }) %>
+      </select>
+      <label for="namedm3">Tên danh mục 3 cần thêm:</label>
+      <input type="text" id="namedm3" name="namedm3" />
+      <button type="submit">Thêm danh mục</button>
+    </form>
+    <!-- Combobox hiển thị danh sách danh mục -->
+  </body>
+</html>

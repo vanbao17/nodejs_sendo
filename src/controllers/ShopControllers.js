@@ -2,7 +2,7 @@ const pool = require("../configs/connectDB");
 let getInforShop = (req, res) => {
   let mashop = req.params.id;
   pool.query(
-    "SELECT * FROM sendo.shop where idShop=?; ",
+    "SELECT * FROM psomwqdghosting_sendo.shop where idShop=?; ",
     [mashop],
     (err, result) => {
       if (err) throw err;
@@ -10,10 +10,16 @@ let getInforShop = (req, res) => {
     }
   );
 };
+let getShops = (req, res) => {
+  pool.query("SELECT * FROM psomwqdghosting_sendo.shop ; ", (err, result) => {
+    if (err) throw err;
+    return res.send(JSON.stringify(result));
+  });
+};
 let createShop = (req, res) => {
   let data = req.body;
   pool.query(
-    "insert sendo.shop(phone,password)values (?,?)",
+    "insert psomwqdghosting_sendo.shop(phone,password)values (?,?)",
     [data.phone, data.pass],
     (err, result) => {
       if (err) {
@@ -31,7 +37,7 @@ let createShop = (req, res) => {
 let getShop = (req, res) => {
   let phone = req.body;
   pool.query(
-    "select * from sendo.shop where phone = ?",
+    "select * from psomwqdghosting_sendo.shop where phone = ?",
     [phone.mail],
     (err, result) => {
       if (err) {
@@ -46,7 +52,7 @@ let createTypeShop = (req, res) => {
   let data = req.body;
   if (data.type == "shopSendo") {
     pool.query(
-      "insert sendo.shopSendo(idShop,taxcode,cccd,email)values (?,?,?,?)",
+      "insert psomwqdghosting_sendo.shopSendo(idShop,taxcode,cccd,email)values (?,?,?,?)",
       [data.idshop, data.taxcode, data.cccd, data.email],
       (err, result) => {
         if (err) {
@@ -62,7 +68,7 @@ let createTypeShop = (req, res) => {
     );
   } else {
     pool.query(
-      "insert sendo.shopSendmail(idShop,taxcode,cccd,email,nameshopowner,namecompany,businesstype,brandtype,codebusiness)values (?,?,?,?,?,?,?,?,?)",
+      "insert psomwqdghosting_sendo.shopSendmail(idShop,taxcode,cccd,email,nameshopowner,namecompany,businesstype,brandtype,codebusiness)values (?,?,?,?,?,?,?,?,?)",
       [
         data.idshop,
         data.taxcode,
@@ -91,7 +97,7 @@ let createTypeShop = (req, res) => {
 let getShopSendo = (req, res) => {
   let value = req.body;
   pool.query(
-    "SELECT * FROM sendo.shopSendo where idShop=?",
+    "SELECT * FROM psomwqdghosting_sendo.shopSendo where idShop=?",
     [value.id],
     (err, result) => {
       if (err) {
@@ -105,7 +111,7 @@ let getShopSendo = (req, res) => {
 let getShopSendmail = (req, res) => {
   let value = req.body;
   pool.query(
-    "SELECT * FROM sendo.shopSendmail where idShop=?",
+    "SELECT * FROM psomwqdghosting_sendo.shopSendmail where idShop=?",
     [value.id],
     (err, result) => {
       if (err) {
@@ -123,4 +129,5 @@ module.exports = {
   getShopSendo,
   getShop,
   createTypeShop,
+  getShops,
 };

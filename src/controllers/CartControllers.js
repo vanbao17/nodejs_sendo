@@ -2,7 +2,7 @@ const pool = require("../configs/connectDB");
 let addToCart = (req, res) => {
   let { idUser, idProd, quanlity, size, color } = req.body;
   pool.query(
-    "INSERT INTO sendo.cart(idCustomer, idProduct,quanlityCart,size,color) VALUES (?, ?,?,?,?)",
+    "INSERT INTO psomwqdghosting_sendo.cart(idCustomer, idProduct,quanlityCart,size,color) VALUES (?, ?,?,?,?)",
     [
       idUser,
       idProd,
@@ -22,7 +22,7 @@ let addToCart = (req, res) => {
 let cart = (req, res) => {
   let idUser = req.params.id;
   pool.query(
-    "SELECT * FROM sendo.cart as c,sendo.products as p,sendo.shop as s where c.idProduct = p.idProduct and c.idCustomer = ? and p.idShop=s.idShop;    ",
+    "SELECT * FROM psomwqdghosting_sendo.cart as c,psomwqdghosting_sendo.products as p,psomwqdghosting_sendo.shop as s where c.idProduct = p.idProduct and c.idCustomer = ? and p.idShop=s.idShop;    ",
     [idUser],
     (err, result) => {
       if (err) throw err;
@@ -37,7 +37,7 @@ let handleDeleteCart = (req, res) => {
   }
   console.log(data.idProduct + "||" + data.idUser);
   pool.query(
-    "delete from sendo.cart where idProduct = ? and idCustomer = ?",
+    "delete from psomwqdghosting_sendo.cart where idProduct = ? and idCustomer = ?",
     [data.idProduct, data.idUser],
     (err, result) => {
       if (err) {
@@ -45,7 +45,7 @@ let handleDeleteCart = (req, res) => {
         return res.status(500).send("Internal Server Error");
       }
       pool.query(
-        "SELECT * FROM sendo.cart as c,sendo.products as p,sendo.shop as s where c.idProduct = p.idProduct and c.idCustomer = ? and p.idShop=s.idShop;    ",
+        "SELECT * FROM psomwqdghosting_sendo.cart as c,psomwqdghosting_sendo.products as p,psomwqdghosting_sendo.shop as s where c.idProduct = p.idProduct and c.idCustomer = ? and p.idShop=s.idShop;    ",
         [data.idUser],
         (err, result1) => {
           if (err) {
@@ -62,7 +62,7 @@ let handleDeleteCart = (req, res) => {
 let checkProdInCart = (req, res) => {
   let data = req.params.id;
   pool.query(
-    "SELECT quanlityCart FROM sendo.cart as c where c.idProduct = ?",
+    "SELECT * FROM psomwqdghosting_sendo.cart as c where c.idProduct = ?",
     [data],
     (err, result) => {
       if (err) {
@@ -73,11 +73,10 @@ let checkProdInCart = (req, res) => {
     }
   );
 };
-
 let updateCart = (req, res) => {
   let data = req.body;
   pool.query(
-    "update sendo.cart as c set c.quanlityCart = c.quanlityCart + ? where c.idProduct = ?",
+    "update psomwqdghosting_sendo.cart as c set c.quanlityCart = c.quanlityCart + ? where c.idProduct = ?",
     [data.quanlity, data.idProduct],
     (err, result) => {
       if (err) {
@@ -90,7 +89,7 @@ let updateCart = (req, res) => {
         return res.status(404).send("Update failed !!");
       }
       // pool.query(
-      //   "SELECT * FROM sendo.cart as c,sendo.products as p,sendo.shop as s where c.idProduct = p.idProduct and c.idCustomer = ? and p.idShop=s.idShop;    ",
+      //   "SELECT * FROM psomwqdghosting_sendo.cart as c,psomwqdghosting_sendo.products as p,psomwqdghosting_sendo.shop as s where c.idProduct = p.idProduct and c.idCustomer = ? and p.idShop=s.idShop;    ",
       //   [data.idUser],
       //   (err, result1) => {
       //     if (err) {
@@ -106,7 +105,7 @@ let updateCart = (req, res) => {
 let getDm1Single = (req, res) => {
   let data = req.params.id;
   pool.query(
-    "SELECT * FROM sendo.danhmuc1 as m where m.madm1= ?",
+    "SELECT * FROM psomwqdghosting_sendo.danhmuc1 as m where m.madm1= ?",
     [data],
     (err, result) => {
       if (err) {

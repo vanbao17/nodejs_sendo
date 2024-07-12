@@ -12,8 +12,30 @@ let getAllProducts = (req, res) => {
 let getProductsCate = (req, res) => {
   let madm1 = req.params.cateid;
   pool.query(
-    "SELECT * FROM sendo.products where madm1=?;",
+    "SELECT * FROM psomwqdghosting_sendo.products where madm1=?;",
     [madm1],
+    (err, result) => {
+      if (err) throw err;
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getProductsCateDanhmuc2 = (req, res) => {
+  let madm2 = req.params.cateid;
+  pool.query(
+    "SELECT * FROM psomwqdghosting_sendo.products where madm2=?;",
+    [madm2],
+    (err, result) => {
+      if (err) throw err;
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getProductsCateDanhmuc3 = (req, res) => {
+  let madm3 = req.params.cateid;
+  pool.query(
+    "SELECT * FROM psomwqdghosting_sendo.products where madm3=?;",
+    [madm3],
     (err, result) => {
       if (err) throw err;
       return res.send(JSON.stringify(result));
@@ -23,7 +45,7 @@ let getProductsCate = (req, res) => {
 let getDetailProds = (req, res) => {
   let masp = req.params.id;
   pool.query(
-    "SELECT * FROM sendo.products,sendo.shop,sendo.detailProduct,sendo.danhmuc1,sendo.danhmuc2,sendo.danhmuc3 where sendo.products.idProduct=sendo.detailProduct.idProduct and sendo.products.idProduct = ? and sendo.danhmuc1.madm1 = sendo.products.madm1 and sendo.danhmuc2.madm2 = sendo.products.madm2 and sendo.danhmuc3.madm3 = sendo.products.madm3 and sendo.shop.idShop = sendo.products.idShop ",
+    "SELECT * FROM psomwqdghosting_sendo.products,psomwqdghosting_sendo.shop,psomwqdghosting_sendo.detailProduct,psomwqdghosting_sendo.danhmuc1,psomwqdghosting_sendo.danhmuc2,psomwqdghosting_sendo.danhmuc3 where psomwqdghosting_sendo.products.idProduct=psomwqdghosting_sendo.detailProduct.idProduct and psomwqdghosting_sendo.products.idProduct = ? and psomwqdghosting_sendo.danhmuc1.madm1 = psomwqdghosting_sendo.products.madm1 and psomwqdghosting_sendo.danhmuc2.madm2 = psomwqdghosting_sendo.products.madm2 and psomwqdghosting_sendo.danhmuc3.madm3 = psomwqdghosting_sendo.products.madm3 and psomwqdghosting_sendo.shop.idShop = psomwqdghosting_sendo.products.idShop ",
     [masp],
     (err, result) => {
       if (err) throw err;
@@ -34,7 +56,7 @@ let getDetailProds = (req, res) => {
 let getProductsOfShop = (req, res) => {
   let mashop = req.params.id;
   pool.query(
-    "SELECT * FROM sendo.products where sendo.products.idShop=?;",
+    "SELECT * FROM psomwqdghosting_sendo.products where psomwqdghosting_sendo.products.idShop=?;",
     [mashop],
     (err, result) => {
       if (err) throw err;
@@ -47,7 +69,7 @@ let getFavoriteProd = (req, res) => {
   let data = req.params.id;
   let arrayData = data.split("");
   pool.query(
-    "SELECT * FROM sendo.products where sendo.products.madm1=? and sendo.products.madm2=?;",
+    "SELECT * FROM psomwqdghosting_sendo.products where psomwqdghosting_sendo.products.madm1=? and psomwqdghosting_sendo.products.madm2=?;",
     [arrayData[0], arrayData[1]],
     (err, result) => {
       if (err) throw err;
@@ -58,7 +80,7 @@ let getFavoriteProd = (req, res) => {
 let getFiltersFindProd = (req, res) => {
   let data = req.params.id;
   pool.query(
-    "SELECT quanlityCart FROM sendo.cart as c where c.idProduct = ?",
+    "SELECT quanlityCart FROM psomwqdghosting_sendo.cart as c where c.idProduct = ?",
     [data],
     (err, result) => {
       if (err) {
@@ -72,7 +94,7 @@ let getFiltersFindProd = (req, res) => {
 let getFindProduct = (req, res) => {
   let data = req.query.query.toLowerCase();
   pool.query(
-    "SELECT * FROM sendo.products as p where p.nameProduct LIKE '" +
+    "SELECT * FROM psomwqdghosting_sendo.products as p where p.nameProduct LIKE '" +
       data +
       "%';",
     (err, result) => {
@@ -101,10 +123,10 @@ let createProduct = (req, res) => {
     idShop,
   } = req.body;
   pool.query(
-    "insert into sendo.products(nameProduct,imageProduct,video,selledQuality,QuanlityExists,status,priceDefault,priceSale,datePublic,madm1,madm2,madm3,idShop) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+    "insert into psomwqdghosting_sendo.products(nameProduct,imageProduct,video,selledQuality,QuanlityExists,status,priceDefault,priceSale,datePublic,madm1,madm2,madm3,idShop) values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
     [
       nameProduct,
-      "http://localhost:3001/uploads/" + imageProduct,
+      "https://sdvanbao17.id.vn/uploads/" + imageProduct,
       video,
       selledQuality,
       QuanlityExists,
@@ -179,7 +201,7 @@ let deleteProduct = (req, res) => {
     idProduct.map((item) => {
       return new Promise((resolve, reject) => {
         pool.query(
-          "DELETE FROM sendo.products WHERE idProduct = ?",
+          "DELETE FROM psomwqdghosting_sendo.products WHERE idProduct = ?",
           [item],
           (err, result) => {
             if (err) {
@@ -217,7 +239,7 @@ let deleteDetailProduct = (req, res) => {
     idProduct.map((item) => {
       return new Promise((resolve, reject) => {
         pool.query(
-          "DELETE FROM sendo.detailproduct WHERE idProduct = ?",
+          "DELETE FROM psomwqdghosting_sendo.detailProduct WHERE idProduct = ?",
           [item],
           (err, result) => {
             if (err) {
@@ -251,7 +273,7 @@ let deleteDetailProduct = (req, res) => {
 let getColorsProduct = (req, res) => {
   let idProduct = req.params.id;
   pool.query(
-    "select * from sendo.attribute_values as av, sendo.valuesattr_product as vp where av.attribute_value_id =  vp.attribute_value_id and av.attribute_id=6 and vp.idProduct=?;",
+    "select * from psomwqdghosting_sendo.Attribute_Values as av, psomwqdghosting_sendo.valuesAttr_product as vp where av.attribute_value_id =  vp.attribute_value_id and av.attribute_id=6 and vp.idProduct=?;",
     [idProduct],
     (err, result) => {
       if (err) {
@@ -265,7 +287,7 @@ let getColorsProduct = (req, res) => {
 let getSizesProduct = (req, res) => {
   let idProduct = req.params.id;
   pool.query(
-    "select * from sendo.attribute_values as av, sendo.valuesattr_product as vp where av.attribute_value_id =  vp.attribute_value_id and av.attribute_id=12 and vp.idProduct=?;",
+    "select * from psomwqdghosting_sendo.Attribute_Values as av, psomwqdghosting_sendo.valuesAttr_product as vp where av.attribute_value_id =  vp.attribute_value_id and av.attribute_id=12 and vp.idProduct=?;",
     [idProduct],
     (err, result) => {
       if (err) {
@@ -290,4 +312,6 @@ module.exports = {
   deleteProduct,
   getColorsProduct,
   getSizesProduct,
+  getProductsCateDanhmuc2,
+  getProductsCateDanhmuc3,
 };

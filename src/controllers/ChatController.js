@@ -1,0 +1,42 @@
+const pool = require("../configs/connectDB");
+
+let getChatUser = (req, res) => {
+  const userId = parseInt(req.params.id);
+  pool.query(
+    "select * from psomwqdghosting_sendo.conversations where idCustomers=?",
+    [userId],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("loi cmnr");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let getChatIdShop = (req, res) => {
+  const userId = parseInt(req.params.id);
+  pool.query(
+    "select * from psomwqdghosting_sendo.conversations where idShop=?",
+    [userId],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("loi cmnr");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let addChatUser = (req, res) => {
+  const { idCustomers, idShop } = req.body;
+  const string = `INSERT INTO conversations(idCustomers, idShop) VALUES (?, ?);`;
+  pool.query(string, [idCustomers, idShop], (err, result) => {
+    if (err) {
+      console.log(err);
+      return res.status(500).send("loi cmnr");
+    }
+    return res.status(200).send("oke");
+  });
+};
+module.exports = { getChatUser, addChatUser, getChatIdShop };

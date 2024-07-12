@@ -17,6 +17,8 @@ const {
   deleteDetailProduct,
   getSizesProduct,
   getColorsProduct,
+  getProductsCateDanhmuc2,
+  getProductsCateDanhmuc3,
 } = require("../controllers/ProductControllers");
 const {
   getDanhMuc1,
@@ -24,10 +26,15 @@ const {
   getDanhMuc2Detail,
   getDanhMuc3All,
   getCateFive,
+  getDanhMuc3AllCate,
   getDanhMuc3WithDm2,
   getCateFindPage,
   getAttributeValues,
   getAllAttributeValues,
+  updateDanhMuc1,
+  updateDanhMuc2,
+  updateDanhMuc3,
+  getDanhMuc1WithId,
 } = require("../controllers/CatetoryControllers");
 const {
   getInforShop,
@@ -44,13 +51,45 @@ const {
   updateCart,
   cart,
 } = require("../controllers/CartControllers");
-const { getCustomer } = require("../controllers/CustomerControllers");
+const {
+  getCustomer,
+  getAddressCustomer,
+  addAddressCustomers,
+  checkAddressCustomer,
+  getCustomerId,
+  signIn,
+  updateInforCustomer,
+  updatePassword,
+} = require("../controllers/CustomerControllers");
 const { uploadFileImage } = require("../controllers/FileControllers");
 const {
   addValueAttrProduct,
   deleteValueAttr,
   getColorSize,
+  getAttrVaulueProduct,
+  getFullAttribute,
+  getAllAttribute,
 } = require("../controllers/AttributeValues");
+const {
+  getTransformCate,
+  getTransformWithCate,
+  getTransformOptions,
+} = require("../controllers/MethodTrasnform");
+const {
+  getCatePayment,
+  getPaymentWithCate,
+  getPaymentWithId,
+} = require("../controllers/Payments");
+const {
+  addOderProduct,
+  getOrderCustomer,
+  getOrderIdCustomer,
+  getOrderIdOrder,
+  getOrderItems,
+  getOrderShop,
+  updateStateOrder,
+  deleteOrder,
+} = require("../controllers/OrderControllers");
 const router = express.Router();
 const storage_images_product = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -61,26 +100,36 @@ const storage_images_product = multer.diskStorage({
   },
 });
 
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+// const secretKey = "PhamVanBao_0123";
+// const verifyToken = (req, res, next) => {
+//     const token = req.headers["authorization"];
 
-  if (token == null) return res.sendStatus(401);
+//     if (!token) {
+//         return res.status(403).send("Xì mười nghìn đây bố mày mở cho  :))))");
+//     }
 
-  jwt.verify(token, secretKey, (err, user) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
-};
+//     jwt.verify(token.split(" ")[1], secretKey, (err, decoded) => {
+//         if (err) {
+//             return res.status(500).send("Failed to authenticate token");
+//         }
+
+//         req.idCustomers = decoded.id;
+//         next();
+//     });
+// };
 const upload_images_product = multer({ storage: storage_images_product });
 const initAPIRoute = (app) => {
   router.get("/products", getAllProducts);
+  router.get("/getFullAttribute", getFullAttribute);
+  router.post("/signIn", signIn);
   router.get("/danhmuc1", getDanhMuc1);
   router.get("/danhmuc2", getDanhMuc2All);
+  router.get("/danhmuc3", getDanhMuc3AllCate);
   router.get("/danhmuc2/:madm1", getDanhMuc2Detail);
   router.get("/danhmuc3withdm2/:madm2", getDanhMuc3WithDm2);
   router.get("/productswithcate/:cateid", getProductsCate);
+  router.get("/getProductsCateDanhmuc2/:cateid", getProductsCateDanhmuc2);
+  router.get("/getProductsCateDanhmuc3/:cateid", getProductsCateDanhmuc3);
   router.get("/danhmuc2rand5", getCateFive);
   router.get("/danhmuc3/:cateid", getDanhMuc3All);
   router.get("/detail/:id", getDetailProds);
@@ -88,11 +137,14 @@ const initAPIRoute = (app) => {
   router.get("/prodShop/:id", getProductsOfShop);
   router.get("/favoriteProdShop/:id", getFavoriteProd);
   router.get("/getColorSize/:id", getColorSize);
+  router.get("/getAddressCustomer/:id", getAddressCustomer);
   router.post("/addtocart", addToCart);
   router.get("/gio-hang/:id", cart);
+  router.get("/getCustomerId/:id", getCustomerId);
   router.delete("/delete-cart", handleDeleteCart);
   router.get("/check-prods-select/:id", checkProdInCart);
   router.post("/update-cart", updateCart);
+  router.get("/getDanhMuc1WithId/:id", getDanhMuc1WithId);
   router.get("/tim-kiem/:id", getCateFindPage);
   router.get("/danhmuc1single/:id", getCateFindPage);
   router.get("/getAttributeValues/:id", getAttributeValues);
@@ -100,6 +152,7 @@ const initAPIRoute = (app) => {
   router.get("/getSizesProduct/:id", getSizesProduct);
   router.get("/getProductsLetters", getFindProduct);
   router.get("/getAllAttributeValues", getAllAttributeValues);
+  router.get("/getAllAttribute", getAllAttribute);
   router.post("/create-shop", createShop);
   router.post("/get-shop", getShop);
   router.post("/create-type-shop", createTypeShop);
@@ -112,6 +165,31 @@ const initAPIRoute = (app) => {
   router.post("/deleteValueAttr", deleteValueAttr);
   router.post("/deleteProduct", deleteProduct);
   router.post("/deleteDetailProduct", deleteDetailProduct);
+  router.post("/addAddressCustomers", addAddressCustomers);
+  router.post("/checkAddressCustomer", checkAddressCustomer);
+  router.post("/updateDanhMuc1", updateDanhMuc1);
+  router.post("/updateDanhMuc2", updateDanhMuc2);
+  router.post("/updateDanhMuc3", updateDanhMuc3);
+  router.get("/getTransformCate", getTransformCate);
+  router.post("/getTransformWithCate", getTransformWithCate);
+  router.post("/getTransformOptions", getTransformOptions);
+  router.post("/getAttrVaulueProduct", getAttrVaulueProduct);
+
+  router.get("/getCatePayment", getCatePayment);
+  router.post("/getPaymentWithCate", getPaymentWithCate);
+  router.post("/getPaymentWithId", getPaymentWithId);
+
+  router.post("/addOderProduct", addOderProduct);
+  router.post("/getOrderCustomer", getOrderCustomer);
+  router.post("/getOrderIdCustomer", getOrderIdCustomer);
+  router.post("/getOrderIdOrder", getOrderIdOrder);
+  router.post("/getOrderItems", getOrderItems);
+  router.post("/getOrderShop", getOrderShop);
+  router.post("/updateStateOrder", updateStateOrder);
+  router.post("/updateInforCustomer", updateInforCustomer);
+  router.post("/deleteOrder", deleteOrder);
+  router.post("/updatePassword", updatePassword);
+
   router.post(
     "/upload_images_product",
     upload_images_product.single("file"),
@@ -124,7 +202,7 @@ const initAPIRoute = (app) => {
       }
       const fileInfos = files.map((file) => ({
         name: file,
-        url: `http://localhost:3001/uploads/${file}`,
+        url: `https://sdvanbao17.id.vn/uploads/${file}`,
       }));
       res.json(fileInfos);
     });

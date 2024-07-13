@@ -39,4 +39,18 @@ let addChatUser = (req, res) => {
     return res.status(200).send("oke");
   });
 };
-module.exports = { getChatUser, addChatUser, getChatIdShop };
+let getMessIdConve = (req, res) => {
+  const id = parseInt(req.params.id);
+  pool.query(
+    "select * from psomwqdghosting_sendo.messages where conversation_id=?",
+    [id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("loi cmnr");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+module.exports = { getChatUser, addChatUser, getChatIdShop, getMessIdConve };

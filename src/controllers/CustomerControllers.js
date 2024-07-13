@@ -35,6 +35,21 @@ let getCustomer = (req, res) => {
     }
   );
 };
+let getAllCustomer = (req, res) => {
+  const { list_idShop } = req.body;
+  if (!Array.isArray(list_idShop)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+  const idString = list_idShop.map((id) => pool.escape(id)).join(",");
+  const query = `SELECT idCustomers,nameCustomers,imageUser FROM customers WHERE idCustomers IN (${idString})`;
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error("Error querying cart:", err);
+      return res.status(500).send("Internal Server Error");
+    }
+    return res.send(JSON.stringify(result));
+  });
+};
 let updatePassword = (req, res) => {
   const { idCustomers, password } = req.body;
   pool.query(
@@ -145,4 +160,5 @@ module.exports = {
   signIn,
   updateInforCustomer,
   updatePassword,
+  getAllCustomer,
 };

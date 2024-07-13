@@ -16,6 +16,8 @@ const io = socketIo(http, {
     origin: "http://localhost:3000", // Đảm bảo đây là địa chỉ frontend của bạn
     methods: ["GET", "POST"],
   },
+  transports: ["websocket"],
+  allowEIO3: true,
 });
 const corsOptions = {
   origin: "*",
@@ -52,37 +54,34 @@ app.use(express.static(path.join(__dirname, "build")));
 // });
 app.set("views", path.join(__dirname + "/src/views/"));
 app.set("view engine", "ejs");
-
 io.on("connection", (socket) => {
+  console.log("connection");
   socket.on("joinConversation", (userId) => {
     socket.join(userId);
   });
   socket.on("sendMessage", (data) => {
-    const { userId, sender_type, senderId, content } = data;
-    console.log({ userId, sender_type, senderId, content });
-    io.to(userId).emit("receiveMessage", {
-      userId,
-      sender_type,
-      senderId,
-      content,
-      timestamp: new Date(),
-    });
-    // const query =
-    //   "INSERT INTO messages (conversation_id, sender_type, sender_id, content) VALUES (?, ?, ?, ?)";
-    // pool.query(
-    //   query,
-    //   [conversationId, senderType, senderId, content],
-    //   (err, result) => {
-    //     if (err) throw err;
+    const { idconvention, sender_type, senderId, content } = data;
 
-    // io.to(conversationId).emit("receiveMessage", {
-    //   conversationId,
-    //   senderType,
-    //   senderId,
-    //   content,
-    //   timestamp: new Date(),
-    // });
-    //   }
-    // );
+    const query =
+      "INSERT INTO messages (conversation_id, sender_type, sender_id, content) VALUES (?, ?, ?, ?)";
+    pool.query(
+      query,
+      [idconvention, sender_type, senderId, content],
+      (err, result) => {
+        if (err) throw err;
+
+        io.to(idconvention).emit("receiveMessage", {
+          idconvention,
+          sender_type,
+          senderId,
+          content,
+          timestamp: new Date(),
+        });
+      }
+    );
+  });
+  socket.on("disconnect", function () {
+    socket.disconnect();
+    console.log("Got disconnect!");
   });
 });

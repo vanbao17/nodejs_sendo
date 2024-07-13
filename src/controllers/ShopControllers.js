@@ -16,6 +16,21 @@ let getShops = (req, res) => {
     return res.send(JSON.stringify(result));
   });
 };
+let getAllShop = (req, res) => {
+  const { list_idShop } = req.body;
+  if (!Array.isArray(list_idShop)) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
+  const idString = list_idShop.map((id) => pool.escape(id)).join(",");
+  const query = `SELECT idShop,imageShop,tenshop FROM shop WHERE idShop IN (${idString})`;
+  pool.query(query, (err, result) => {
+    if (err) {
+      console.error("Error querying cart:", err);
+      return res.status(500).send("Internal Server Error");
+    }
+    return res.send(JSON.stringify(result));
+  });
+};
 let createShop = (req, res) => {
   let data = req.body;
   pool.query(
@@ -130,4 +145,5 @@ module.exports = {
   getShop,
   createTypeShop,
   getShops,
+  getAllShop,
 };

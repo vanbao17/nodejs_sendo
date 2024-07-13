@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const fs = require("fs");
 const PORT = 3001;
+const bcrypt = require("bcryptjs");
 const {
   getProductsOfShop,
   getDetailProds,
@@ -43,6 +44,8 @@ const {
   createTypeShop,
   getShopSendo,
   getShopSendmail,
+  getShops,
+  getAllShop,
 } = require("../controllers/ShopControllers");
 const {
   addToCart,
@@ -60,6 +63,7 @@ const {
   signIn,
   updateInforCustomer,
   updatePassword,
+  getAllCustomer,
 } = require("../controllers/CustomerControllers");
 const { uploadFileImage } = require("../controllers/FileControllers");
 const {
@@ -90,6 +94,12 @@ const {
   updateStateOrder,
   deleteOrder,
 } = require("../controllers/OrderControllers");
+const {
+  getChatUser,
+  getChatIdShop,
+  addChatUser,
+  getMessIdConve,
+} = require("../controllers/ChatController");
 const router = express.Router();
 const storage_images_product = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -99,26 +109,33 @@ const storage_images_product = multer.diskStorage({
     cb(null, file.originalname);
   },
 });
+const secretKey = "PhamVanBao_0123";
+const verifyToken = (req, res, next) => {
+  const token = req.headers["authorization"];
 
-// const secretKey = "PhamVanBao_0123";
-// const verifyToken = (req, res, next) => {
-//     const token = req.headers["authorization"];
+  if (!token) {
+    return res.status(403).send("Xì mười nghìn đây bố mày mở cho  :))))");
+  }
 
-//     if (!token) {
-//         return res.status(403).send("Xì mười nghìn đây bố mày mở cho  :))))");
-//     }
+  jwt.verify(token.split(" ")[1], secretKey, (err, decoded) => {
+    if (err) {
+      return res.status(500).send("Failed to authenticate token");
+    }
 
-//     jwt.verify(token.split(" ")[1], secretKey, (err, decoded) => {
-//         if (err) {
-//             return res.status(500).send("Failed to authenticate token");
-//         }
-
-//         req.idCustomers = decoded.id;
-//         next();
-//     });
-// };
+    req.idCustomers = decoded.id;
+    next();
+  });
+};
 const upload_images_product = multer({ storage: storage_images_product });
 const initAPIRoute = (app) => {
+  router.get("/getAllAttribute", getAllAttribute);
+  router.post("/updatePassword", updatePassword);
+  router.get("/getDanhMuc1WithId/:id", getDanhMuc1WithId);
+  router.post("/updateDanhMuc1", updateDanhMuc1);
+  router.post("/updateDanhMuc2", updateDanhMuc2);
+  router.post("/updateDanhMuc3", updateDanhMuc3);
+  router.get("/getProductsCateDanhmuc2/:cateid", getProductsCateDanhmuc2);
+  router.get("/getProductsCateDanhmuc3/:cateid", getProductsCateDanhmuc3);
   router.get("/products", getAllProducts);
   router.get("/getFullAttribute", getFullAttribute);
   router.post("/signIn", signIn);
@@ -128,12 +145,11 @@ const initAPIRoute = (app) => {
   router.get("/danhmuc2/:madm1", getDanhMuc2Detail);
   router.get("/danhmuc3withdm2/:madm2", getDanhMuc3WithDm2);
   router.get("/productswithcate/:cateid", getProductsCate);
-  router.get("/getProductsCateDanhmuc2/:cateid", getProductsCateDanhmuc2);
-  router.get("/getProductsCateDanhmuc3/:cateid", getProductsCateDanhmuc3);
   router.get("/danhmuc2rand5", getCateFive);
   router.get("/danhmuc3/:cateid", getDanhMuc3All);
   router.get("/detail/:id", getDetailProds);
   router.get("/inforShop/:id", getInforShop);
+  router.get("/getShops", getShops);
   router.get("/prodShop/:id", getProductsOfShop);
   router.get("/favoriteProdShop/:id", getFavoriteProd);
   router.get("/getColorSize/:id", getColorSize);
@@ -143,16 +159,18 @@ const initAPIRoute = (app) => {
   router.get("/getCustomerId/:id", getCustomerId);
   router.delete("/delete-cart", handleDeleteCart);
   router.get("/check-prods-select/:id", checkProdInCart);
+  router.get("/getChatUser/:id", getChatUser);
+  router.get("/getChatIdShop/:id", getChatIdShop);
+
   router.post("/update-cart", updateCart);
-  router.get("/getDanhMuc1WithId/:id", getDanhMuc1WithId);
   router.get("/tim-kiem/:id", getCateFindPage);
   router.get("/danhmuc1single/:id", getCateFindPage);
   router.get("/getAttributeValues/:id", getAttributeValues);
   router.get("/getColorsProduct/:id", getColorsProduct);
   router.get("/getSizesProduct/:id", getSizesProduct);
+  router.get("/getMessIdConve/:id", getMessIdConve);
   router.get("/getProductsLetters", getFindProduct);
   router.get("/getAllAttributeValues", getAllAttributeValues);
-  router.get("/getAllAttribute", getAllAttribute);
   router.post("/create-shop", createShop);
   router.post("/get-shop", getShop);
   router.post("/create-type-shop", createTypeShop);
@@ -167,9 +185,7 @@ const initAPIRoute = (app) => {
   router.post("/deleteDetailProduct", deleteDetailProduct);
   router.post("/addAddressCustomers", addAddressCustomers);
   router.post("/checkAddressCustomer", checkAddressCustomer);
-  router.post("/updateDanhMuc1", updateDanhMuc1);
-  router.post("/updateDanhMuc2", updateDanhMuc2);
-  router.post("/updateDanhMuc3", updateDanhMuc3);
+
   router.get("/getTransformCate", getTransformCate);
   router.post("/getTransformWithCate", getTransformWithCate);
   router.post("/getTransformOptions", getTransformOptions);
@@ -188,7 +204,11 @@ const initAPIRoute = (app) => {
   router.post("/updateStateOrder", updateStateOrder);
   router.post("/updateInforCustomer", updateInforCustomer);
   router.post("/deleteOrder", deleteOrder);
-  router.post("/updatePassword", updatePassword);
+  router.post("/getAllCustomer", getAllCustomer);
+  router.post("/getAllShop", getAllShop);
+  // router.post("/logIn", logIn);
+
+  router.post("/addChatUser", addChatUser);
 
   router.post(
     "/upload_images_product",

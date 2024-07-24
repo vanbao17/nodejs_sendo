@@ -42,6 +42,33 @@ let getProductsCateDanhmuc3 = (req, res) => {
     }
   );
 };
+let updateProduct = (req, res) => {
+  let {
+    idProduct,
+    trademark,
+    nameProduct,
+    priceDefault,
+    priceSale,
+    QuanlityExists,
+    dateEnd,
+  } = req.body;
+  pool.query(
+    "UPDATE products as pd, detailProduct as dtpd SET pd.nameProduct = ?, pd.priceDefault = ?, pd.priceSale = ?, pd.QuanlityExists = ?, dtpd.trademark = ?, dtpd.dateEnd = ? WHERE pd.idProduct = ? AND pd.idProduct = dtpd.idProduct;",
+    [
+      nameProduct,
+      priceDefault,
+      priceSale,
+      QuanlityExists,
+      trademark,
+      dateEnd,
+      idProduct,
+    ],
+    (err, result) => {
+      if (err) throw err;
+      return res.status(200).send("oke");
+    }
+  );
+};
 let getDetailProds = (req, res) => {
   let masp = req.params.id;
   pool.query(
@@ -162,9 +189,14 @@ let addDetailProduct = (req, res) => {
       length,
       width,
       height,
+      imageOther,
     },
   } = req.body;
-
+  const values = imageOther.map((file) => [
+    idProduct,
+    "https://sdvanbao17.id.vn/uploads/" + file,
+  ]);
+  const sql = "INSERT INTO Images (idProduct, imageProduct) VALUES ?";
   pool.query(
     `INSERT INTO detailProduct (idProduct,descriptionProduct,trademark,dateBegin,dateEnd,properties,unit,descriptionDetail,origin,mass,slmua,length,large,height,idComment,state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
@@ -190,7 +222,15 @@ let addDetailProduct = (req, res) => {
         console.error("Error executing query:", err);
         return res.status(500).send("Internal Server Error");
       }
-      return res.status(200).send("Detail product inserted successfully");
+      pool.query(sql, [values], (err, result) => {
+        if (err) {
+          console.error("Error inserting data:", err);
+          res.status(500).json({ message: "Error inserting data" });
+          return;
+        }
+        return res.status(200).send("Detail product inserted successfully");
+      });
+      //   return res.status(200).send("Detail product inserted successfully");
     }
   );
 };
@@ -298,6 +338,20 @@ let getSizesProduct = (req, res) => {
     }
   );
 };
+let getImageProduct = (req, res) => {
+  let idProduct = req.params.id;
+  pool.query(
+    "SELECT * FROM Images WHERE idProduct=?",
+    [idProduct],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send("error");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
 module.exports = {
   getAllProducts,
   getProductsCate,
@@ -314,4 +368,6 @@ module.exports = {
   getSizesProduct,
   getProductsCateDanhmuc2,
   getProductsCateDanhmuc3,
+  updateProduct,
+  getImageProduct,
 };

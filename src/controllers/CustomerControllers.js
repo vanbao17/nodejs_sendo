@@ -21,20 +21,6 @@ let signIn = (req, res) => {
     }
   );
 };
-let getCustomer = (req, res) => {
-  let value = req.body;
-  pool.query(
-    "SELECT * FROM psomwqdghosting_sendo.customers where phoneNumber=?",
-    ["0" + value.phone_data.slice(3)],
-    (err, result) => {
-      if (err) {
-        console.error("Error querying cart:", err);
-        return res.status(500).send("Internal Server Error");
-      }
-      return res.send(JSON.stringify(result));
-    }
-  );
-};
 let getAllCustomer = (req, res) => {
   const { list_idShop } = req.body;
   if (!Array.isArray(list_idShop)) {
@@ -49,6 +35,20 @@ let getAllCustomer = (req, res) => {
     }
     return res.send(JSON.stringify(result));
   });
+};
+let getCustomer = (req, res) => {
+  let value = req.body;
+  pool.query(
+    "SELECT * FROM psomwqdghosting_sendo.customers where phoneNumber=?",
+    ["0" + value.phone_data.slice(3)],
+    (err, result) => {
+      if (err) {
+        console.error("Error querying cart:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
 };
 let updatePassword = (req, res) => {
   const { idCustomers, password } = req.body;

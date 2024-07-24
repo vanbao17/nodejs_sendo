@@ -60,10 +60,10 @@ let handleDeleteCart = (req, res) => {
 };
 
 let checkProdInCart = (req, res) => {
-  let data = req.params.id;
+  let { idCustomer, idProduct } = req.body;
   pool.query(
-    "SELECT * FROM psomwqdghosting_sendo.cart as c where c.idProduct = ?",
-    [data],
+    "SELECT * FROM psomwqdghosting_sendo.cart as c where c.idProduct = ? and c.idCustomer=? ",
+    [idProduct, idCustomer],
     (err, result) => {
       if (err) {
         console.error("Error querying cart:", err);
@@ -76,8 +76,8 @@ let checkProdInCart = (req, res) => {
 let updateCart = (req, res) => {
   let data = req.body;
   pool.query(
-    "update psomwqdghosting_sendo.cart as c set c.quanlityCart = c.quanlityCart + ? where c.idProduct = ?",
-    [data.quanlity, data.idProduct],
+    "update psomwqdghosting_sendo.cart as c set c.quanlityCart = c.quanlityCart + ? where c.idProduct = ? and c.idCustomer=?",
+    [data.quanlity, data.idProduct, data.idCustomer],
     (err, result) => {
       if (err) {
         console.error("Error querying cart:", err);

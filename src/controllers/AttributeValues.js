@@ -97,6 +97,7 @@ let getFullAttribute = (req, res) => {
     }
   );
 };
+
 let getAllAttribute = (req, res) => {
   pool.query(
     "select * from psomwqdghosting_sendo.Attributes",
@@ -122,6 +123,41 @@ let getAttrVaulueProduct = (req, res) => {
     }
   );
 };
+let getAttrDetailProduct = (req, res) => {
+  const idProduct = req.params.id;
+  pool.query(
+    "SELECT * FROM psomwqdghosting_sendo.Attributes as a, psomwqdghosting_sendo.Attribute_Values as av,psomwqdghosting_sendo.valuesAttr_product as vp where av.attribute_value_id=vp.attribute_value_id and a.attribute_id=av.attribute_id and vp.idProduct=? ;",
+    [idProduct],
+    (err, result) => {
+      if (err) {
+        return res.status(500).send("loi cmnr");
+      }
+      return res.send(JSON.stringify(result));
+    }
+  );
+};
+let createAttrCate = (req, res) => {
+  const { madm1, ids } = req.body;
+  const values = ids.map((id) => [madm1, id]);
+  const sql = "insert into Category_Attributes(madm1,attribute_id) values ?";
+  pool.query(sql, [values], (err, result) => {
+    if (err) {
+      return res.status(500).send("loi cmnr");
+    }
+    return res.status(200).send("loi cmnr");
+  });
+};
+let createAttrValues = (req, res) => {
+  const { attribute_id, values } = req.body;
+  const vls = values.map((value) => [attribute_id, value]);
+  const sql = "insert into Attribute_Values(attribute_id,value) values ?";
+  pool.query(sql, [vls], (err, result) => {
+    if (err) {
+      return res.status(500).send("loi cmnr");
+    }
+    return res.status(200).send("loi cmnr");
+  });
+};
 module.exports = {
   addValueAttrProduct,
   deleteValueAttr,
@@ -129,4 +165,7 @@ module.exports = {
   getAttrVaulueProduct,
   getFullAttribute,
   getAllAttribute,
+  createAttrCate,
+  createAttrValues,
+  getAttrDetailProduct,
 };

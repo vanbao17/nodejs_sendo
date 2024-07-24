@@ -10,6 +10,8 @@ let addOderProduct = async (req, res) => {
     transform_option_id,
     idShop,
     order_item,
+    size,
+    color,
   } = req.body;
 
   pool.query(
@@ -32,8 +34,8 @@ let addOderProduct = async (req, res) => {
       const orderId = result.insertId;
       order_item.forEach((i) => {
         pool.query(
-          "INSERT INTO psomwqdghosting_sendo.OrderItems (order_id, idProduct, quantity, price) VALUES (?, ?, ?, ?);",
-          [orderId, i.idProduct, i.quantity, i.price],
+          "INSERT INTO psomwqdghosting_sendo.OrderItems (order_id, idProduct, quantity, price,size,color) VALUES (?, ?, ?, ?,?,?);",
+          [orderId, i.idProduct, i.quantity, i.price, size, color],
           (err, results) => {
             if (err) {
               return res.status(500).send(err);
@@ -150,7 +152,16 @@ let deleteOrder = (req, res) => {
     }
   );
 };
-
+let getOrderFinal = (req, res) => {
+  const { idProduct } = req.body;
+  const query = `select * from Orders as o, OrderItems as oi where o.id=oi.order_id and o.state=5 and oi.idProduct=?`;
+  pool.query(query, [idProduct], (err, result) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    return res.status(200).send(JSON.stringify(result));
+  });
+};
 module.exports = {
   addOderProduct,
   getOrderCustomer,
@@ -160,4 +171,5 @@ module.exports = {
   getOrderShop,
   updateStateOrder,
   deleteOrder,
+  getOrderFinal,
 };
